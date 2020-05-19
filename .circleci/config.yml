@@ -11,10 +11,10 @@ jobs:
           steps:
             - run: npm install
             - run: npm test
-	  - persist_to_workspace:
-	      root: /home/circleci
-		    paths:
-		      - project
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - project
   job-test:
     docker:
       - image: circleci/openjdk:8u222-stretch
