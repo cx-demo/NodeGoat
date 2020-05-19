@@ -31,7 +31,7 @@ This Heroku instance uses Free ($0/month) node server and MongoLab add-on.
 ### OPTION 2 - Run NodeGoat on your machine
 
 If you do not wish to run NodeGoat on Heroku, please follow these steps to setup and run it locally -
-* Install [Node.js](http://nodejs.org/) - NodeGoat requires Node v4.4 or above
+* Install [Node.js](http://nodejs.org/) - NodeGoat requires Node v8 or above
 
 * Clone the github repository
 ```
@@ -51,7 +51,7 @@ npm install
 * Create Mongo DB:
     You can create a remote MongoDB instance or use local mongod installation
     * A. Using Remote MongoDB
-        * Create a sandbox mongoDB instance (free) at [MongoLab](https://mongolab.com/plans/pricing/)
+        * Create a sandbox mongoDB instance (free) at [mLab](https://mlab.com/plans/pricing/#plan-sandbox)
         * Create a new database.
         * Create a user.
         * Update the `db` property in file `config/env/development.js` to reflect your DB setup. (in format: `mongodb://<username>:<password>@<databasename>`)
@@ -67,6 +67,11 @@ npm run db:seed
 * Start server, this starts the NodeGoat application at url [http://localhost:4000/](http://localhost:4000/)
 ```
 npm start
+```
+
+* Start server with nodemon, this starts the NodeGoat application at url [http://localhost:5000/](http://localhost:5000/)
+```
+npm run dev
 ```
 
 ### OPTION 3 - Run NodeGoat on Docker
@@ -95,25 +100,20 @@ The default application settings (database url, http port, etc.) can be changed 
 ## Report bugs, Feedback, Comments
 *  Open a new [issue](https://github.com/OWASP/NodeGoat/issues) or contact team by joining chat at [Slack](https://owasp.slack.com/messages/project-nodegoat/) or [![Join the chat at https://gitter.im/OWASP/NodeGoat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/OWASP/NodeGoat?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+
 ## Contributing
-Contributions from community are key to make NodeGoat a high quality comprehensive resource. Lets make NodeGoat awesome together!
 
-### Ways to Contribute
-Depending on your preference, you can contribute in various ways. Here are tasks planned for [upcoming release](https://github.com/OWASP/NodeGoat/milestones).
-You can also open an issue, sending a PR, or get in touch on [Gitter Chat](https://gitter.im/OWASP/NodeGoat) or [Slack](https://owasp.slack.com/messages/project-nodegoat/)
+Please Follow [the contributing guide](CONTRIBUTING.md)
 
-If sending PR, once code is ready to commit, run:
-```
-npm run precommit
-```
-This command uses `js-beautifier` to indent the code and verifies these [coding standards](https://github.com/OWASP/NodeGoat/blob/master/.jshintrc) using `jsHint`. Please resolve all `jsHint` errors before committing the code.
+## Code Of Conduct (CoC)
+
+This project is bound by a [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Contributors
 Here are the amazing [contributors](https://github.com/OWASP/NodeGoat/graphs/contributors) to the NodeGoat project.
 
 ## Supports
-[![JetBrains](https://www.jetbrains.com/company/docs/logo_jetbrains.png?raw=true)](https://www.jetbrains.com/webstorm/)
-- Thanks to JetBrains for providing licenses to fantastic WebStorm IDE to build this project.
+- Thanks to JetBrains for providing licenses to fantastic [WebStorm IDE](https://www.jetbrains.com/webstorm/) to build this project.
 
 ## License
 Code licensed under the [Apache License v2.0.](http://www.apache.org/licenses/LICENSE-2.0)
