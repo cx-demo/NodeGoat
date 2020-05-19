@@ -11,7 +11,54 @@ jobs:
           steps:
             - run: npm install
             - run: npm test
+      - run:
+          name: Install CxCLI Plugin
+          command: |
+            wget -O ~/cxcli.zip https://download.checkmarx.com/9.0.0/Plugins/CxConsolePlugin-2020.2.3.zip
+            mkdir ~/CxConsole
+            unzip ~/cxcli.zip -d ~/CxConsole
+            cd ~/CxConsole
+            cat -v runCxConsole.sh | sed -e "s/\^M$//" > runCxConsole-fixed.sh
+            rm -f runCxConsole.sh
+            mv runCxConsole-fixed.sh runCxConsole.sh
+            chmod +x runCxConsole.sh
+      - run:
+          name: Execute CxSAST & CxOSA Scan
+          command: |
+            echo $CX_SERVER
+            echo $CX_TOKEN
+            echo "$CX_TEAM\\$CX_PROJECT"
+            ~/CxConsole/runCxConsole.sh Scan \
+              -CxServer $CX_SERVER \
+              -CxToken "$CX_TOKEN" \
+              -ProjectName "$CX_TEAM\\$CX_PROJECT" \
+              -LocationType folder \
+              -LocationPath ~/project \
+              -enableOsa \
+              -executepackagedependency \
+              -OsaJson $CX_PROJECT-osa.json \
+              -ReportXML $CX_PROJECT-results.xml \
+              -ReportPDF $CX_PROJECT-results.pdf \
+              -Comment "git $CIRCLE_BRANCH@$CIRCLE_SHA1" \
+              -verbose
+      - run:
+          name: Moving Artifacts
+          command: |
+            mkdir ~/artifacts
+            mv ~/CxConsole/Checkmarx/Reports/OSADependencies.json ~/artifacts
+            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-results.xml ~/artifacts
+            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-results.pdf ~/artifacts
+            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSASummary.json ~/artifacts
+            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSALibraries.json ~/artifacts
+            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSAVulnerabilities.json ~/artifacts
+            
+      # Store the generated reports with the build logs in CircleCI
+      - store_artifacts:
+          path: ~/artifacts
+          destination: sast_results  
+          
 workflows:
     build-and-test:
       jobs:
-        - build-and-test
+        - build-and-test:
+            context: Checkmarx # use usage of organization context 'Checkmarx' for environment variables
