@@ -22,6 +22,9 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci
+      - run:
+          name: list dir
+          command: ls -ltr
       - cxflow/scan:
           preset: 'Checkmarx Express'
           version: '9.0'
