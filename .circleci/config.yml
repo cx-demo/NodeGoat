@@ -23,70 +23,70 @@ jobs:
       - attach_workspace:
           at: /home/circleci
       - cxflow/scan:
-          preset: Checkmarx Express
-          version: 9.0
+          preset: 'Checkmarx Express'
+          version: '9.0'
           checkmarx-url: ${CX_SERVER}
-          team: /CxServer/SP/APAC/sgcxdemo
-          apply-filters: --filter-severity=High
+          team: '/CxServer/SP/APAC/sgcxdemo'
+          apply-filters: '--filter-severity=High'
           incremental: true
           break: true
-          params: --checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=1 --checkmarx.incremental-threshold=7
-          report-file: checkmarx.json
+          params: '--checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=1 --checkmarx.incremental-threshold=7'
+          report-file: 'checkmarx.json'
           
       - store_artifacts:
-          path: checkmarx.json
+          path: 'checkmarx.json'
       
-  job-test:
-    docker:
-      - image: circleci/openjdk:8u222-stretch
-    steps:
-      - attach_workspace:
-          at: /home/circleci
-      - run:
-          name: Install CxCLI Plugin
-          command: |
-            wget -O ~/cxcli.zip https://download.checkmarx.com/9.0.0/Plugins/CxConsolePlugin-2020.2.3.zip
-            mkdir ~/CxConsole
-            unzip ~/cxcli.zip -d ~/CxConsole
-            cd ~/CxConsole
-            cat -v runCxConsole.sh | sed -e "s/\^M$//" > runCxConsole-fixed.sh
-            rm -f runCxConsole.sh
-            mv runCxConsole-fixed.sh runCxConsole.sh
-            chmod +x runCxConsole.sh
-      - run:
-          name: Execute CxSAST & CxOSA Scan
-          command: |
-            echo $CX_SERVER
-            echo $CX_TOKEN
-            echo "$CX_TEAM\\$CX_PROJECT"
-            ~/CxConsole/runCxConsole.sh Scan \
-              -CxServer $CX_SERVER \
-              -CxToken "$CX_TOKEN" \
-              -ProjectName "$CX_TEAM\\$CX_PROJECT" \
-              -LocationType folder \
-              -LocationPath ~/project \
-              -enableOsa \
-              -executepackagedependency \
-              -OsaJson $CX_PROJECT-osa.json \
-              -ReportXML $CX_PROJECT-results.xml \
-              -ReportPDF $CX_PROJECT-results.pdf \
-              -Comment "git $CIRCLE_BRANCH@$CIRCLE_SHA1" \
-              -verbose
-      - run:
-          name: Moving Artifacts
-          command: |
-            mkdir ~/artifacts
-            mv ~/CxConsole/Checkmarx/Reports/OSADependencies.json ~/artifacts
-            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-results.xml ~/artifacts
-            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-results.pdf ~/artifacts
-            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSASummary.json ~/artifacts
-            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSALibraries.json ~/artifacts
-            mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSAVulnerabilities.json ~/artifacts
+  # job-test:
+    # docker:
+      # - image: circleci/openjdk:8u222-stretch
+    # steps:
+      # - attach_workspace:
+          # at: /home/circleci
+      # - run:
+          # name: Install CxCLI Plugin
+          # command: |
+            # wget -O ~/cxcli.zip https://download.checkmarx.com/9.0.0/Plugins/CxConsolePlugin-2020.2.3.zip
+            # mkdir ~/CxConsole
+            # unzip ~/cxcli.zip -d ~/CxConsole
+            # cd ~/CxConsole
+            # cat -v runCxConsole.sh | sed -e "s/\^M$//" > runCxConsole-fixed.sh
+            # rm -f runCxConsole.sh
+            # mv runCxConsole-fixed.sh runCxConsole.sh
+            # chmod +x runCxConsole.sh
+      # - run:
+          # name: Execute CxSAST & CxOSA Scan
+          # command: |
+            # echo $CX_SERVER
+            # echo $CX_TOKEN
+            # echo "$CX_TEAM\\$CX_PROJECT"
+            # ~/CxConsole/runCxConsole.sh Scan \
+              # -CxServer $CX_SERVER \
+              # -CxToken "$CX_TOKEN" \
+              # -ProjectName "$CX_TEAM\\$CX_PROJECT" \
+              # -LocationType folder \
+              # -LocationPath ~/project \
+              # -enableOsa \
+              # -executepackagedependency \
+              # -OsaJson $CX_PROJECT-osa.json \
+              # -ReportXML $CX_PROJECT-results.xml \
+              # -ReportPDF $CX_PROJECT-results.pdf \
+              # -Comment "git $CIRCLE_BRANCH@$CIRCLE_SHA1" \
+              # -verbose
+      # - run:
+          # name: Moving Artifacts
+          # command: |
+            # mkdir ~/artifacts
+            # mv ~/CxConsole/Checkmarx/Reports/OSADependencies.json ~/artifacts
+            # mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-results.xml ~/artifacts
+            # mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-results.pdf ~/artifacts
+            # mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSASummary.json ~/artifacts
+            # mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSALibraries.json ~/artifacts
+            # mv ~/CxConsole/Checkmarx/Reports/$CX_PROJECT-osa_CxOSAVulnerabilities.json ~/artifacts
             
-      # Store the generated reports with the build logs in CircleCI
-      - store_artifacts:
-          path: ~/artifacts
-          destination: sast_results  
+      # # Store the generated reports with the build logs in CircleCI
+      # - store_artifacts:
+          # path: ~/artifacts
+          # destination: sast_results  
           
 workflows:
     version: 2
@@ -96,7 +96,7 @@ workflows:
         - cx-scan:
             requires: 
               - job-build
-            context: Checkmarx # use usage of organization context 'Checkmarx' for environment variables
+            context: CxFlow # use usage of organization context 'Checkmarx' for environment variables
             filters:
               branches:
                 only: circleci-project-setup
