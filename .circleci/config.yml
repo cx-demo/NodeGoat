@@ -14,14 +14,14 @@ jobs:
             - run: npm test
       #refers to working_directory $CIRCLE_WORKING_DIRECTORY      
       - persist_to_workspace:
-          root: /home/circleci 
+          root: .
           paths:
             - project
   cx-scan:
     executor: cxflow/default
     steps:
       - attach_workspace:
-          at: /home/circleci
+          at: .
       - run:
           name: list dir
           command: |
