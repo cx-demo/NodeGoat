@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@1.1.6
+  cxflow: checkmarx-ts/cxflow@1.0.4
 jobs:
   job-build:
     executor:
@@ -11,10 +12,30 @@ jobs:
           steps:
             - run: npm install
             - run: npm test
+      #refers to working_directory $CIRCLE_WORKING_DIRECTORY      
       - persist_to_workspace:
-          root: /home/circleci
+          root: /home/circleci 
           paths:
             - project
+  cx-scan:
+    executor: cxflow/default
+    steps:
+      - attach_workspace:
+          at: /home/circleci
+      - cxflow/scan:
+          preset: Checkmarx Express
+          version: 9.0
+          checkmarx-url: ${CX_SERVER}
+          team: /CxServer/SP/APAC/sgcxdemo
+          apply-filters: --filter-severity=High
+          incremental: true
+          break: true
+          params: --checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=1 --checkmarx.incremental-threshold=7
+          report-file: checkmarx.json
+          
+      - store_artifacts:
+          path: checkmarx.json
+      
   job-test:
     docker:
       - image: circleci/openjdk:8u222-stretch
@@ -72,7 +93,14 @@ workflows:
     build-and-test:
       jobs:
         - job-build
-        - job-test:
-            context: Checkmarx # use usage of organization context 'Checkmarx' for environment variables
+        - cx-scan:
             requires: 
               - job-build
+            context: Checkmarx # use usage of organization context 'Checkmarx' for environment variables
+            filters:
+              branches:
+                only: circleci-project-setup
+        #- job-test:
+        #    context: Checkmarx # use usage of organization context 'Checkmarx' for environment variables
+        #    requires: 
+        #      - job-build
