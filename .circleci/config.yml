@@ -24,7 +24,9 @@ jobs:
           at: /home/circleci
       - run:
           name: list dir
-          command: ls -ltr
+          command: |
+            echo pwd
+            ls -ltra
       - cxflow/scan:
           preset: 'Checkmarx Express'
           version: '9.0'
