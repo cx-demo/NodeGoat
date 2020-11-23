@@ -31,7 +31,7 @@ jobs:
           checkmarx-url: ${CX_SERVER}
           team: '/CxServer/SP/APAC/sgcxdemo'
           apply-filters: '--filter-severity=High'
-          incremental: true
+          incremental: false
           break: true
           params: '--checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=5  --checkmarx.incremental-threshold=7'
           report-file: 'checkmarx.json'
