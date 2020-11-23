@@ -47,10 +47,10 @@ workflows:
         - job-checkout
         - job-build:
             requires: 
-              - job-build
+              - job-checkout
         - job-scan:
             requires: 
-              - job-build
+              - job-checkout
             context: CxFlow # use usage of organization context 'Checkmarx' for environment variables
             filters:
               branches:
