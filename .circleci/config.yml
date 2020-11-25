@@ -34,7 +34,7 @@ jobs:
           apply-filters: '--filter-severity=High'
           incremental: true
           break: true
-          params: '--checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=5  --checkmarx.incremental-threshold=7'
+          params: '--checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=5  --checkmarx.incremental-threshold=7 --cx-flow.break-build=true'
           report-file: 'checkmarx.json'
           
       - store_artifacts:
