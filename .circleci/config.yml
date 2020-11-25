@@ -26,12 +26,13 @@ jobs:
       #    at: /home/circleci
       - checkout
       - cxflow/scan:
+          project: '${CIRCLE_PROJECT_REPONAME}-CI-${CIRCLE_BRANCH}'
           preset: 'Checkmarx Default'
           version: '9.0'
           checkmarx-url: ${CX_SERVER}
-          team: '/CxServer/SP/APAC/sgcxdemo'
+          team: '${CX_TEAM}'
           apply-filters: '--filter-severity=High'
-          incremental: false
+          incremental: true
           break: true
           params: '--checkmarx.username=${CX_USER} --checkmarx.password=${CX_PASSWORD} --checkmarx.incremental-num-scans=5  --checkmarx.incremental-threshold=7'
           report-file: 'checkmarx.json'
